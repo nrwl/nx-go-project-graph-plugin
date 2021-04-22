@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "projects": {
+    "executables-cmd-hello": {
+      "root": "executables/cmd/hello",
+      "sourceRoot": "executables/cmd/hello/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "cwd": "executables/cmd/hello",
+            "outputPath": "dist/services/hello",
+            "commands": ["go build -o ../../../dist/cmd/hello ."]
+          }
+        }
+      }
+    },
+    "executables-services-hello": {
+      "root": "executables/services/hello",
+      "sourceRoot": "executables/services/hello/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "cwd": "executables/services/hello",
+            "outputPath": "dist/services/hello",
+            "commands": ["go build -o ../../../dist/services/hello ."]
+          }
+        }
+      }
+    },
+    "libs-pkg-hello": {
+      "root": "libs/pkg/hello",
+      "sourceRoot": "libs/pkg/hello",
+      "projectType": "library",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": { "commands": ["go test ./..."], "cwd": "libs/pkg/hello" }
+        }
+      }
+    }
+  },
+  "cli": { "defaultCollection": "@nrwl/workspace" }
+}
