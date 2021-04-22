@@ -1,94 +1,35 @@
+# Nx Go Project Graph Plugin
 
+This repo is an example implementation of a project graph plugin. In this example, we will be adding dependencies between the Go projects in this repo to Nx's Project Graph.
 
-# NxGoProjectGraphPlugin
+The Project Graph Plugin is defined in [`nx.json`](./nx.json) as a _plugin_.
+This can also be defined using an npm package name.
 
-This project was generated using [Nx](https://nx.dev).
+> Prerequisite: You need to have [Go](https://golang.org/) installed to run this repo.
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+## Seeing the `ProjectGraph`
 
-🔎 **Powerful, Extensible Dev Tools**
+Running `nx dep-graph` shows the following graph.
 
-## Adding capabilities to your workspace
+<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx-go-project-graph-plugin/master/docs/assets/project-graph.png" width="600" alt="Nx Project Graph"></p>
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+## How it works
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+1. The plugin is a JavaScript function exported as `processProjectGraph` [here](./tools/project-graph-plugins/go-project-graph.js). It takes in the current `ProjectGraph` and some context.
+2. The plugin first creates a `ProjectGraphBuilder` from the current graph which helps iteratively mutate the graph.
+3. The plugin then runs a [Go script](./tools/project-graph-plugins/get-package-metadata.go) which eventually outputs project dependencies as JSON.
+4. The Go script runs the `go list -json all` command which lists all of the different projects as well as the dependencies that they have.
+5. Then this list is filtered down to only the projects in this repo (not external Go dependencies).
+6. When the [JavaScript function](./tools/project-graph-plugins/go-project-graph.js) gets the result back, it maps the Go project names to the Nx project names.
+7. Then, the plugin calls the `ProjectGraphBuilder.addDependency` function to add the dependencies of each project to the `ProjectGraph`.
+8. Finally, the plugin returns `ProjectGraphBuilder.getProjectGraph()` which is the mutated `ProjectGraph`.
 
-Below are our core plugins:
+## Bonus: Running the Go projects
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+Like any other Nx project, the following commands work:
 
-There are also many [community plugins](https://nx.dev/nx-community) you could add.
-
-## Generate an application
-
-Run `nx g @nrwl/react:app my-app` to generate an application.
-
-> You can use any of the plugins above to generate applications as well.
-
-When using Nx, you can create multiple applications and libraries in the same workspace.
-
-## Generate a library
-
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
-
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are shareable across libraries and applications. They can be imported from `@nx-go-project-graph-plugin/mylib`.
-
-## Development server
-
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-
-
-## ☁ Nx Cloud
-
-### Computation Memoization in the Cloud
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+- `nx build executables-cmd-hello`
+  - Builds the Hello Command
+  - If you run this twice, the result will be cached!
+- `nx test libs-pkg-hello`
+  - Tests the Hello lib
