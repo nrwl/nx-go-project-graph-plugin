@@ -1,7 +1,7 @@
 {
   "npmScope": "nx-go-project-graph-plugin",
   "workspaceLayout": { "appsDir": "executables" },
-  "plugins": ["./tools/project-graph-plugins/go-project-graph.js"],
+  "plugins": ["@nx-go/dep-graph"],
   "affected": { "defaultBase": "master" },
   "implicitDependencies": {
     "package.json": { "dependencies": "*", "devDependencies": "*" }
