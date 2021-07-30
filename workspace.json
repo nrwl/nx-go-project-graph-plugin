@@ -38,10 +38,15 @@
       "targets": {
         "test": {
           "executor": "@nrwl/workspace:run-commands",
-          "options": { "commands": ["go test ./..."], "cwd": "libs/pkg/hello" }
+          "options": {
+            "commands": ["go test ./..."],
+            "cwd": "libs/pkg/hello"
+          }
         }
       }
     }
   },
-  "cli": { "defaultCollection": "@nrwl/workspace" }
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  }
 }

@@ -1,5 +1,5 @@
 // @ts-check
-const { DependencyType, ProjectGraphBuilder } = require('@nrwl/devkit');
+const { ProjectGraphBuilder } = require('@nrwl/devkit');
 const execa = require('execa');
 const { join } = require('path');
 
@@ -44,11 +44,13 @@ exports.processProjectGraph = (graph, context) => {
         workspaceGoModule,
         depImportPath
       );
-      builder.addDependency(DependencyType.static, projectName, depProjectName);
+      for (const file of pkg.GoFiles) {
+        builder.addExplicitDependency(projectName, join(graph.nodes[projectName].data.root, file), depProjectName);
+      }
     }
   }
 
-  return builder.getProjectGraph();
+  return builder.getUpdatedProjectGraph();
 };
 
 function deriveNxProjectNameFromGoImportPath(

@@ -1,10 +1,17 @@
 {
   "npmScope": "nx-go-project-graph-plugin",
-  "workspaceLayout": { "appsDir": "executables" },
+  "workspaceLayout": {
+    "appsDir": "executables"
+  },
   "plugins": ["./tools/project-graph-plugins/go-project-graph.js"],
-  "affected": { "defaultBase": "master" },
+  "affected": {
+    "defaultBase": "master"
+  },
   "implicitDependencies": {
-    "package.json": { "dependencies": "*", "devDependencies": "*" }
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    }
   },
   "tasksRunnerOptions": {
     "default": {
@@ -18,8 +25,22 @@
     }
   },
   "projects": {
-    "libs-pkg-hello": { "tags": [] },
-    "executables-cmd-hello": { "tags": [] },
-    "executables-services-hello": { "tags": [] }
+    "executables-cmd-hello": {
+      "tags": []
+    },
+    "executables-services-hello": {
+      "tags": []
+    },
+    "libs-pkg-hello": {
+      "tags": []
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
   }
 }
